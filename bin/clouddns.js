@@ -6,9 +6,9 @@ var _          = require('lodash');
 var fs         = require('q-io/fs');
 var path       = require('path');
 var http       = require('q-io/http');
-var cloudflare = require('cloudflare');
 var logger     = require('bragi');
 var moment     = require('moment');
+var CloudDNS   = require(path.join(__dirname, '..', 'index'));
 var pkg        = require(path.join(__dirname, '..', 'package.json'));
 var argv       = require('yargs')
   .option('k', {
