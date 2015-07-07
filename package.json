@@ -23,6 +23,7 @@
   "homepage": "https://github.com/mikedamage/clouddns#readme",
   "dependencies": {
     "bragi": "^0.1.0",
+    "cloudflare": "0.0.8",
     "lodash": "^3.10.0",
     "moment": "^2.10.3",
     "q": "^1.4.1",
