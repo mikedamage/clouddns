@@ -6,22 +6,17 @@ var _          = require('lodash');
 var Q          = require('q');
 var fs         = require('q-io/fs');
 var http       = require('q-io/http');
-var cloudflare = require('cloudflare');
 var moment     = require('moment');
 
 var jsonipURL = 'http://jsonip.com/';
 var defaults  = {
-  ipFile: path.join(process.env.HOME, '.clouddns-ip'),
   domains: [],
   ttl: 3e2
 };
 
 var CloudDNS = function CloudDNS(options) {
+  this.lastIP     = '';
   this.options    = _.assign(defaults, options);
-  this.cloudflare = cloudflare.createClient({
-    email: this.options.email,
-    token: this.options.token
-  });
 };
 
 CloudDNS.prototype.getCurrentIP = function() {
@@ -34,14 +29,7 @@ CloudDNS.prototype.getCurrentIP = function() {
 };
 
 CloudDNS.prototype.getLastIP = function() {
-  var ipFile = this.options.ipFile;
-
-  return fs.exists(ipFile).then(function(exists) {
-    if (exists) {
-      return fs.read(ipFile);
-    }
-    return '';
-  });
+  return Q(this.lastIP);
 };
 
 CloudDNS.prototype.needsUpdate = function() {
@@ -65,5 +53,6 @@ CloudDNS.prototype.update = function(force) {
     }
 
     // [todo] - Actually update DNS records on cloudflare
+
   });
 };
