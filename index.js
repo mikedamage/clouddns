@@ -2,11 +2,11 @@
 
 'use strict';
 
-var _          = require('lodash');
-var Q          = require('q');
-var fs         = require('q-io/fs');
-var http       = require('q-io/http');
-var moment     = require('moment');
+var _      = require('lodash');
+var Q      = require('q');
+var fs     = require('q-io/fs');
+var http   = require('q-io/http');
+var moment = require('moment');
 
 var jsonipURL = 'http://jsonip.com/';
 var defaults  = {
