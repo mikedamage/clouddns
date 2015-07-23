@@ -1,58 +1,53 @@
-/* jshint node: true */
+/* jshint node: true, esnext: true */
 
 'use strict';
 
-var _      = require('lodash');
-var Q      = require('q');
-var fs     = require('q-io/fs');
-var http   = require('q-io/http');
-var moment = require('moment');
+import _          from 'lodash';
+import Q          from 'q';
+import {fs, http} from 'q-io';
+import moment     from 'moment';
 
-var jsonipURL = 'http://jsonip.com/';
-var defaults  = {
+const jsonipURL = 'http://jsonip.com/';
+const defaults  = {
   domains: [],
   ttl: 3e2
 };
 
-var CloudDNS = function CloudDNS(options) {
-  this.lastIP     = '';
-  this.options    = _.assign(defaults, options);
-};
+class CloudDNS {
+  constructor(options = {}) {
+    this.lastIP  = '';
+    this.options = _.assign(defaults, options);
+  }
 
-CloudDNS.prototype.getCurrentIP = function() {
-  return http.request(jsonipURL)
-    .get('body')
-    .invoke('read')
-    .invoke('toString')
-    .then(JSON.parse)
-    .get('ip');
-};
+  getCurrentIP() {
+    return http.request(jsonipURL)
+      .get('body')
+      .invoke('read')
+      .invoke('toString')
+      .then(JSON.parse)
+      .get('ip');
+  }
 
-CloudDNS.prototype.getLastIP = function() {
-  return Q(this.lastIP);
-};
+  getLastIP() {
+    return Q(this.lastIP);
+  }
 
-CloudDNS.prototype.needsUpdate = function() {
-  return Q.all([
-    this.getLastIP(),
-    this.getCurrentIP()
-  ]).spread(function(last, current) {
-    return last !== current;
-  });
-};
+  needsUpdate() {
+    return Q.all([
+      this.getLastIP(),
+      this.getCurrentIP()
+    ]).spread((last, current) => last !== current);
+  }
 
-CloudDNS.prototype.update = function(force) {
-  force    = !!force;
-  var self = this;
+  update(force = false) {
+    return this.needsUpdate().then(needsUpdate => {
+      let deferred = Q.defer();
 
-  return this.needsUpdate().then(function(needsUpdate) {
-    var deferred = Q.defer();
+      if (!needsUpdate && !force) {
+        return deferred.resolve(false);
+      }
 
-    if (!needsUpdate && !force) {
-      return deferred.resolve(false);
-    }
-
-    // [todo] - Actually update DNS records on cloudflare
-
-  });
-};
+      // todo - actually do things to update the IP
+    });
+  }
+}
