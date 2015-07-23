@@ -1,17 +1,16 @@
-/* jshint node: true */
+/* jshint node: true, esnext: true */
 
 'use strict';
 
-var _          = require('lodash');
-var fs         = require('q-io/fs');
-var path       = require('path');
-var http       = require('q-io/http');
-var logger     = require('bragi');
-var moment     = require('moment');
-var CloudDNS   = require(path.join(__dirname, '..', 'index'));
-var pkg        = require(path.join(__dirname, '..', 'package.json'));
-var argv       = require('yargs')
-  .option('k', {
+import _        from 'lodash';
+import path     from 'path';
+import logger   from 'bragi';
+import moment   from 'moment';
+import CloudDNS from '../index';
+import pkg      from '../package.json';
+import yargs    from 'yargs';
+
+let argv = yargs.option('k', {
     alias: 'key',
     description: 'CloudFlare API key'
   })
