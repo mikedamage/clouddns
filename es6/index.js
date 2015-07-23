@@ -4,7 +4,8 @@
 
 import _          from 'lodash';
 import Q          from 'q';
-import {fs, http} from 'q-io';
+import fs         from 'q-io/fs';
+import http       from 'q-io/http';
 import moment     from 'moment';
 
 const jsonipURL = 'http://jsonip.com/';

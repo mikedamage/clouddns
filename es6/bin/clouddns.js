@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /* jshint node: true, esnext: true */
 
 'use strict';
@@ -7,10 +9,12 @@ import path     from 'path';
 import logger   from 'bragi';
 import moment   from 'moment';
 import CloudDNS from '../index';
-import pkg      from '../package.json';
+import pkg      from '../../package.json';
 import yargs    from 'yargs';
 
-let argv = yargs.option('k', {
+let argv = yargs
+  .wrap(80)
+  .option('k', {
     alias: 'key',
     description: 'CloudFlare API key'
   })
@@ -51,8 +55,8 @@ if (argv.log === '-') {
   logger.transports.empty();
   logger.transports.add(new logger.transportClasses.File({
     filename: argv.log,
-    format: function(log) {
-      var tpl = _.template('[ <%= timestamp %> ][ <%= group %> ] <%= message %>');
+    format: log => {
+      let tpl       = _.template('[ <%= timestamp %> ][ <%= group %> ] <%= message %>');
       log.timestamp = moment(log.unixTimestamp * 1000).format();
       return tpl(log);
     }

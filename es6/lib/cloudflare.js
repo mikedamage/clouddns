@@ -2,71 +2,65 @@
 
 'use strict';
 
-var _    = require('lodash');
-var http = require('q-io/http');
-var url  = require('url');
-var path = require('path');
+import _    from 'lodash';
+import http from 'q-io/http';
+import url  from 'url';
+import path from 'path';
 
-var endpoint = 'https://api.cloudflare.com/client/v4';
-var base     = url.parse(endpoint);
-var defaults = {
+const endpoint = 'https://api.cloudflare.com/client/v4';
+const base     = url.parse(endpoint);
+const defaults = {
   token: null,
   email: null
 };
 
-
-var queryString = function(params) {
+let queryString = params => {
   if (!params || !_.isObject(params)) return '';
-
-  return _.map(params, function(val, key) {
-    return encodeURIComponent(key) + '=' + encodeURIComponent(val);
-  }).join('&');
+  return _.map(params, (val, key) => encodeURIComponent(key) + '=' + encodeURIComponent(val)).join('&');
 };
 
-var endpointURL = function() {
-  var path;
-  var query = '';
+let endpointURL = () => {
+  let urlPath;
+  let query = '';
 
   if (arguments.length && _.isObject(arguments[arguments.length - 1])) {
     query = '?' + queryString(Array.prototype.pop.call(arguments));
   }
 
-  path = '/' + _.map(arguments, encodeURIComponent).join('/');
+  urlPath = '/' + _.map(arguments, encodeURIComponent).join('/');
 
   return endpoint + path + query;
 };
 
-var CloudFlare = function CloudFlare(options) {
-  this.options = _.assign(defaults, options);
-  this.headers = {
-    'x-auth-email': this.options.email,
-    'x-auth-key': this.options.token,
-    'host': base.hostname,
-    'content-type': 'application/json'
-  };
+class CloudFlare {
+  constructor(options = {}) {
+    this.options = _.assign(defaults, options);
+    this.headers = {
+      'x-auth-email': this.options.email,
+      'x-auth-key': this.options.token,
+      'host': base.hostname,
+      'content-type': 'application/json'
+    };
 
-  if (!this.options.email || !this.options.token) {
-    throw new Error('Email address and API token are required options');
-  }
-};
-
-CloudFlare.prototype.listZones = function(params) {
-  if (!params) {
-    params = {};
+    if (!this.options.email || !this.options.token) {
+      throw new Error('email and token are required');
+    }
   }
 
-  var request = {
-    url: endpointURL('zones', params),
-    headers: this.headers,
-    method: 'GET'
-  };
+  listZones(params = {}) {
+    let request = {
+      url: endpointURL('zones', params),
+      headers: this.headers,
+      method: 'GET'
+    };
 
-  return http.request(request)
-    .get('body')
-    .invoke('read')
-    .invoke('toString')
-    .then(JSON.parse);
-};
+    return http.request(request)
+      .get('body')
+      .invoke('read')
+      .invoke('toString')
+      .then(JSON.parse);
+  }
+}
 
 CloudFlare.prototype.getZoneRecords = function(zoneID, params) {
   if (!params) {
