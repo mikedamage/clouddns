@@ -60,43 +60,39 @@ class CloudFlare {
       .invoke('toString')
       .then(JSON.parse);
   }
+
+  getZoneRecords(zoneID, params = {}) {
+    let request = {
+      url: endpointURL('zones', zoneID, 'dns_records', params),
+      headers: this.headers,
+      method: 'GET'
+    };
+
+    return http.request(request)
+      .get('body')
+      .invoke('read')
+      .invoke('toString')
+      .then(JSON.parse);
+  }
+
+  updateRecord(zoneID, recordID, params = {}) {
+    if (!_.isObject(params) || _.isEmpty(params)) {
+      throw new Error('params are required');
+    }
+
+    let request = {
+      url: endpointURL('zone', zoneID, 'dns_records', recordID),
+      headers: this.headers,
+      method: 'PUT',
+      body: JSON.stringify(params)
+    };
+
+    return http.request(request)
+      .get('body')
+      .invoke('read')
+      .invoke('toString')
+      .then(JSON.parse);
+  }
 }
 
-CloudFlare.prototype.getZoneRecords = function(zoneID, params) {
-  if (!params) {
-    params = {};
-  }
-
-  var request = {
-    url: endpointURL('zones', zoneID, 'dns_records', params),
-    headers: this.headers,
-    method: 'GET'
-  };
-
-  return http.request(request)
-    .get('body')
-    .invoke('read')
-    .invoke('toString')
-    .then(JSON.parse);
-};
-
-CloudFlare.prototype.updateRecord = function(zoneID, recordID, params) {
-  if (!params || !_.isObject(params)) {
-    throw new Error('params must be an object');
-  }
-
-  var request = {
-    url: endpointURL('zones', zoneID, 'dns_records', recordID),
-    headers: this.headers,
-    method: 'PUT',
-    body: JSON.stringify(params)
-  };
-
-  return http.request(request)
-    .get('body')
-    .invoke('read')
-    .invoke('toString')
-    .then(JSON.parse);
-};
-
-module.exports = CloudFlare;
+export default CloudFlare;
