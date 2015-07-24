@@ -1,7 +1,7 @@
 var ld         = require('lodash');
 var http       = require('q-io/http');
 var fs         = require('q-io/fs');
-var CloudFlare = require('./lib/cloudflare');
+var CloudFlare = require('./es5/lib/cloudflare');
 
 var auth, cf, zones, records;
 
