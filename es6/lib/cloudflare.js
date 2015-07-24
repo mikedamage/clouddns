@@ -16,10 +16,12 @@ const defaults = {
 
 let queryString = params => {
   if (!params || !_.isObject(params)) return '';
-  return _.map(params, (val, key) => encodeURIComponent(key) + '=' + encodeURIComponent(val)).join('&');
+  return _.map(params, (val, key) => {
+    return encodeURIComponent(key) + '=' + encodeURIComponent(val);
+  }).join('&');
 };
 
-let endpointURL = () => {
+let endpointURL = function() {
   let urlPath;
   let query = '';
 
@@ -29,7 +31,7 @@ let endpointURL = () => {
 
   urlPath = '/' + _.map(arguments, encodeURIComponent).join('/');
 
-  return endpoint + path + query;
+  return endpoint + urlPath + query;
 };
 
 class CloudFlare {
@@ -48,6 +50,8 @@ class CloudFlare {
   }
 
   listZones(params = {}) {
+    let reqURL = endpointURL('zones', params);
+    console.log(reqURL);
     let request = {
       url: endpointURL('zones', params),
       headers: this.headers,
