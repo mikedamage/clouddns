@@ -3,7 +3,7 @@ var http       = require('q-io/http');
 var fs         = require('q-io/fs');
 var CloudFlare = require('./es5/lib/cloudflare');
 
-var auth, cf, zones, records;
+var auth, cf, zones, records, err;
 
 fs.exists('auth.json').then(function(exists) {
   if (exists) {
