@@ -22,11 +22,15 @@ let queryString = params => {
 };
 
 let endpointURL = function() {
-  let urlPath;
+  let urlPath, params;
   let query = '';
 
   if (arguments.length && _.isObject(arguments[arguments.length - 1])) {
-    query = '?' + queryString(Array.prototype.pop.call(arguments));
+    params = Array.prototype.pop.call(arguments);
+
+    if (!_.isEmpty(params)) {
+      query += '?' + queryString(params);
+    }
   }
 
   urlPath = '/' + _.map(arguments, encodeURIComponent).join('/');
@@ -68,6 +72,20 @@ class CloudFlare {
   getZoneRecords(zoneID, params = {}) {
     let request = {
       url: endpointURL('zones', zoneID, 'dns_records', params),
+      headers: this.headers,
+      method: 'GET'
+    };
+
+    return http.request(request)
+      .get('body')
+      .invoke('read')
+      .invoke('toString')
+      .then(JSON.parse);
+  }
+
+  getRecordDetails(zoneID, recordID) {
+    let request = {
+      url: endpointURL('zones', zoneID, 'dns_records', recordID),
       headers: this.headers,
       method: 'GET'
     };
