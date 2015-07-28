@@ -62,10 +62,18 @@ class CloudFlare {
   }
 
   listZones(params = {}) {
-    let reqURL = endpointURL('zones', params);
-    console.log(reqURL);
     let request = {
       url: endpointURL('zones', params),
+      headers: this.headers,
+      method: 'GET'
+    };
+
+    return getResult(request);
+  }
+
+  getZoneDetails(zoneID) {
+    let request = {
+      url: endpointURL('zones', zoneID),
       headers: this.headers,
       method: 'GET'
     };
@@ -103,6 +111,17 @@ class CloudFlare {
       headers: this.headers,
       method: 'PUT',
       body: JSON.stringify(params)
+    };
+
+    return getResult(request);
+  }
+
+  purgeZoneCache(zoneID) {
+    let request = {
+      url: endpointURL('zones', zoneID, 'purge_cache'),
+      headers: this.headers,
+      method: 'DELETE',
+      body: JSON.stringify({ purge_everything: true })
     };
 
     return getResult(request);
