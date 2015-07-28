@@ -2,10 +2,11 @@
 
 'use strict';
 
-import _    from 'lodash';
-import http from 'q-io/http';
-import url  from 'url';
-import path from 'path';
+import _               from 'lodash';
+import http            from 'q-io/http';
+import url             from 'url';
+import path            from 'path';
+import getResponseJSON from './get-response-json';
 
 const endpoint = 'https://api.cloudflare.com/client/v4';
 const base     = url.parse(endpoint);
@@ -38,14 +39,6 @@ let endpointURL = function() {
   return endpoint + urlPath + query;
 };
 
-let getResult = request => {
-  return http.request(request)
-    .get('body')
-    .invoke('read')
-    .invoke('toString')
-    .then(JSON.parse);
-};
-
 class CloudFlare {
   constructor(options = {}) {
     this.options = _.assign(defaults, options);
@@ -68,7 +61,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return getResult(request);
+    return getResponseJSON(request);
   }
 
   getZoneDetails(zoneID) {
@@ -78,7 +71,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return getResult(request);
+    return getResponseJSON(request);
   }
 
   getZoneRecords(zoneID, params = {}) {
@@ -88,7 +81,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return getResult(request);
+    return getResponseJSON(request);
   }
 
   getRecordDetails(zoneID, recordID) {
@@ -98,7 +91,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return getResult(request);
+    return getResponseJSON(request);
   }
 
   updateRecord(zoneID, recordID, params = {}) {
@@ -113,7 +106,7 @@ class CloudFlare {
       body: JSON.stringify(params)
     };
 
-    return getResult(request);
+    return getResponseJSON(request);
   }
 
   purgeZoneCache(zoneID) {
@@ -124,7 +117,7 @@ class CloudFlare {
       body: JSON.stringify({ purge_everything: true })
     };
 
-    return getResult(request);
+    return getResponseJSON(request);
   }
 }
 

@@ -33,6 +33,7 @@
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
+    "gulp-jasmine": "^2.0.1",
     "gulp-load-plugins": "^0.10.0",
     "gulp-sourcemaps": "^1.5.2"
   }
