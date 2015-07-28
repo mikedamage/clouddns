@@ -9,10 +9,20 @@ var path = require('path');
 var resources = {
   sourceRoot: path.join(__dirname, 'es6'),
   es6: './es6/**/*.js',
-  es5: './es5'
+  es5: './es5',
+  spec: 'spec/**/*.js'
 };
 
-var config = {};
+var config = {
+  jasmine: {
+    verbose: true
+  }
+};
+
+gulp.task('spec', [ 'js' ], function() {
+  return gulp.src(resources.spec)
+    .pipe($.jasmine(config.jasmine));
+});
 
 gulp.task('js', function() {
   return gulp.src(resources.es6)

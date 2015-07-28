@@ -11,28 +11,22 @@ import CloudFlare      from './lib/cloudflare';
 import getResponseJSON from './lib/get-response-json';
 
 const jsonipURL = 'http://jsonip.com/';
-const defaults  = {
-  token: null,
-  email: null,
-  domains: [],
-  ttl: 3e2
-};
 
 class CloudDNS {
   constructor(options = {}) {
 
     this.lastIP  = '';
-    this.options = _.assign(defaults, options);
+    this.options = _.assign({ domains: [], ttl: 3e2 }, options);
 
     if (!this.options.token) {
-      throw new Error('options.token required');
+      throw new Error('options.token is required');
     }
 
     if (!this.options.email) {
       throw new Error('options.email is required');
     }
 
-    this.client = new CloudFlare({
+    this.client = this.options.client || new CloudFlare({
       email: this.options.email,
       token: this.options.token
     });
