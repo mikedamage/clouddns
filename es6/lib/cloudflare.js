@@ -38,6 +38,14 @@ let endpointURL = function() {
   return endpoint + urlPath + query;
 };
 
+let getResult = request => {
+  return http.request(request)
+    .get('body')
+    .invoke('read')
+    .invoke('toString')
+    .then(JSON.parse);
+};
+
 class CloudFlare {
   constructor(options = {}) {
     this.options = _.assign(defaults, options);
@@ -62,11 +70,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return http.request(request)
-      .get('body')
-      .invoke('read')
-      .invoke('toString')
-      .then(JSON.parse);
+    return getResult(request);
   }
 
   getZoneRecords(zoneID, params = {}) {
@@ -76,11 +80,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return http.request(request)
-      .get('body')
-      .invoke('read')
-      .invoke('toString')
-      .then(JSON.parse);
+    return getResult(request);
   }
 
   getRecordDetails(zoneID, recordID) {
@@ -90,11 +90,7 @@ class CloudFlare {
       method: 'GET'
     };
 
-    return http.request(request)
-      .get('body')
-      .invoke('read')
-      .invoke('toString')
-      .then(JSON.parse);
+    return getResult(request);
   }
 
   updateRecord(zoneID, recordID, params = {}) {
@@ -109,11 +105,7 @@ class CloudFlare {
       body: JSON.stringify(params)
     };
 
-    return http.request(request)
-      .get('body')
-      .invoke('read')
-      .invoke('toString')
-      .then(JSON.parse);
+    return getResult(request);
   }
 }
 

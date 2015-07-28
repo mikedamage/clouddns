@@ -45,10 +45,12 @@ class CloudDNS {
       let deferred = Q.defer();
 
       if (!needsUpdate && !force) {
-        return deferred.resolve(false);
+        deferred.resolve(false);
+      } else {
+        // todo - actually do things to update the IP
       }
 
-      // todo - actually do things to update the IP
+      return deferred.promise;
     });
   }
 }
