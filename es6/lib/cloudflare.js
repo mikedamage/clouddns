@@ -2,11 +2,11 @@
 
 'use strict';
 
-import _               from 'lodash';
-import http            from 'q-io/http';
-import url             from 'url';
-import path            from 'path';
-import getResponseJSON from './get-response-json';
+import _                 from 'lodash';
+import http              from 'q-io/http';
+import url               from 'url';
+import path              from 'path';
+import {getResponseJSON} from './utilities';
 
 const endpoint = 'https://api.cloudflare.com/client/v4';
 const base     = url.parse(endpoint);
