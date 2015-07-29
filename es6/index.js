@@ -3,7 +3,7 @@
 'use strict';
 
 import _               from 'lodash';
-import Q               from 'q';
+import q               from 'q';
 import fs              from 'q-io/fs';
 import http            from 'q-io/http';
 import moment          from 'moment';
@@ -37,11 +37,11 @@ class CloudDNS {
   }
 
   getLastIP() {
-    return Q(this.lastIP);
+    return q(this.lastIP);
   }
 
   needsUpdate() {
-    return Q.all([
+    return q.all([
       this.getLastIP(),
       this.getCurrentIP()
     ]).spread((last, current) => last !== current);
@@ -49,7 +49,7 @@ class CloudDNS {
 
   update(force = false) {
     return this.needsUpdate().then(needsUpdate => {
-      let deferred = Q.defer();
+      let deferred = q.defer();
 
       if (!needsUpdate && !force) {
         deferred.resolve(false);
