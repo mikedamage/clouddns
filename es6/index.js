@@ -8,6 +8,7 @@ import fs              from 'q-io/fs';
 import http            from 'q-io/http';
 import moment          from 'moment';
 import CloudFlare      from './lib/cloudflare';
+import {getRootDomain} from './lib/utilities';
 
 import {
   getResponseJSON,
@@ -49,6 +50,19 @@ class CloudDNS {
       this.getLastIP(),
       this.getCurrentIP()
     ]).spread((last, current) => last !== current);
+  }
+
+  getRecordsForDomain(subdomain) {
+    let rootDomain = getRootDomain(subdomain);
+
+    return this.client
+      .getZones()
+      .then(zones => {
+        return _.find(zones.result, zone => zone.name === rootDomain);
+      })
+      .then(zone => {
+        return this.client.getZoneRecords(zone.id);
+      });
   }
 
   update(force = false) {
