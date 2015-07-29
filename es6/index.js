@@ -8,7 +8,11 @@ import fs              from 'q-io/fs';
 import http            from 'q-io/http';
 import moment          from 'moment';
 import CloudFlare      from './lib/cloudflare';
-import getResponseJSON from './lib/get-response-json';
+
+import {
+  getResponseJSON,
+  getRootDomain
+} from './lib/utilities';
 
 const jsonipURL = 'http://jsonip.com/';
 
