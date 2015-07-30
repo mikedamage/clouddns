@@ -41,6 +41,19 @@ class CloudDNS {
     });
   }
 
+  get domains() {
+    return this.options.domains;
+  }
+
+  set domains(domains) {
+    if (!_.isArray(domains) || _.isEmpty(domains)) {
+      throw new Error('domains must be a non-empty array');
+    }
+
+    this.options.domains = domains;
+    this.rootDomains     = _(this.options.domains).map(getRootDomain).uniq().value();
+  }
+
   getCurrentIP() {
     return getResponseJSON(jsonipURL);
   }
