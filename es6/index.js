@@ -8,7 +8,6 @@ import fs              from 'q-io/fs';
 import http            from 'q-io/http';
 import moment          from 'moment';
 import CloudFlare      from './lib/cloudflare';
-import {getRootDomain} from './lib/utilities';
 
 import {
   getResponseJSON,
@@ -23,6 +22,10 @@ class CloudDNS {
     this.lastIP  = '';
     this.options = _.assign({ domains: [], ttl: 3e2 }, options);
 
+    if (_.isEmpty(this.options.domains)) {
+      throw new Error('options.domains must not be empty');
+    }
+
     if (!this.options.token) {
       throw new Error('options.token is required');
     }
@@ -31,7 +34,8 @@ class CloudDNS {
       throw new Error('options.email is required');
     }
 
-    this.client = this.options.client || new CloudFlare({
+    this.rootDomains = _(this.options.domains).map(getRootDomain).uniq().value();
+    this.client      = this.options.client || new CloudFlare({
       email: this.options.email,
       token: this.options.token
     });
